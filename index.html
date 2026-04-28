@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input id="u" style="width:100%" placeholder="输入完整 URL">
+    <button onclick="parse()">解析</button>
+    <div id="res"></div>
+    <script>
+        function parse() {
+            const params = new URLSearchParams(new URL(document.getElementById('u').value).search);
+            document.getElementById('res').innerHTML = Array.from(params).map(p => `<p>${p[0]}: ${p[1]}</p>`).join('');
+        }
+    </script>
+</body>
+</html>
