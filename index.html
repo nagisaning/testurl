@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html>
-<body>
-    <input id="u" style="width:100%" placeholder="输入完整 URL">
-    <button onclick="parse()">解析</button>
-    <div id="res"></div>
+<body style="font-family: sans-serif; padding: 20px; max-width: 800px; margin: auto; background: #f9f9f9;">
+    <div style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h3>🔗 URL 参数解析器</h3>
+        <div style="display: flex; gap: 10px;">
+            <input id="u" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="粘贴完整 URL (需包含 http:// 或 https://)">
+            <button onclick="parse()" style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer;">解析</button>
+        </div>
+        <div id="res" style="margin-top: 20px;"></div>
+    </div>
+
     <script>
         function parse() {
-            const params = new URLSearchParams(new URL(document.getElementById('u').value).search);
-            document.getElementById('res').innerHTML = Array.from(params).map(p => `<p>${p[0]}: ${p[1]}</p>`).join('');
+            const urlInput = document.getElementById('u').value.trim();
+            const resDiv = document.getElementById('res');
+            
+            try {
+                const urlObj = new URL(urlInput);
+                const params = new URLSearchParams(urlObj.search);
+                
+                if (Array.from(params).length === 0) {
+                    resDiv.innerHTML = "<i style='color: #666;'>该 URL 不包含任何参数。</i>";
+                    return;
+                }
+
+                let html = `<table style="width:100%; border-collapse: collapse; margin-top:10px;">
+                    <tr style="background:#f2f2f2; text-align:left;">
+                        <th style="padding:10px; border:1px solid #ddd;">参数名 (Key)</th>
+                        <th style="padding:10px; border:1px solid #ddd;">参数值 (Value)</th>
+                    </tr>`;
+                
+                params.forEach((value, key) => {
+                    html += `<tr>
+                        <td style="padding:10px; border:1px solid #ddd; color:#007bff; font-weight:bold;">${key}</td>
+                        <td style="padding:10px; border:1px solid #ddd; word-break:break-all;">${value}</td>
+                    </tr>`;
+                });
+                
+                html += `</table>`;
+                resDiv.innerHTML = html;
+            } catch (e) {
+                resDiv.innerHTML = `<b style="color: #dc3545;">解析失败：</b> 请确保输入了完整的 URL（包含 http:// 或 https://）`;
+            }
         }
     </script>
 </body>
